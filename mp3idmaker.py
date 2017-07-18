@@ -4,20 +4,6 @@ from os.path import basename
 import re
 import ini
 class SongList:
-    # vocabulary = (
-    #     ('title',       'TIT2',     id3.TIT2),
-    #     ('album',       'TALB',     id3.TALB),
-    #     ('tracknum',    'TRCK',     id3.TRCK),
-    #     ('artist',      'TPE1',     id3.TPE1),
-    #     ('disk',        'TPOS',     id3.TPOS),
-    #     ('year',        'TDRC',     id3.TDRC),
-    #     ('genre',       'TCON',     id3.TCON),
-    #     ('comment',     'COMM',     id3.COMM),
-    #     # ('url', 'WXXX', id3.WXXX),
-    #     ('encode',      'TENC',     id3.TENC),
-    #     ('authority',   'TCOP',     id3.TCOP)
-    # )
-
     vocabulary = {
         'title':       ('TIT2',         id3.TIT2),
         'album':       ('TALB',         id3.TALB),
@@ -64,7 +50,6 @@ class SongList:
                 except:
                     pass
                 print(song[1])
-
             print()
 
     def _getvalue(self, tag_value, path):
@@ -114,10 +99,6 @@ class SongList:
     def gettag(self, row_, tagname):
         try:
             return str(self.list_[row_][1][self.vocabulary[tagname][0]])
-            # if value_:
-            #     return value_
-            # else:
-            #     return ''
         except:
             return ''
 
