@@ -3,6 +3,7 @@ from getfiles import getfileslist
 from os.path import basename
 import re
 import ini
+
 class SongList:
     vocabulary = {
         'title':       ('TIT2',         id3.TIT2),
@@ -101,6 +102,7 @@ class SongList:
             return str(self.list_[row_][1][self.vocabulary[tagname][0]])
         except:
             return ''
+
 
 def mainbody():
     fileslist = getfileslist(ini.folder[0])

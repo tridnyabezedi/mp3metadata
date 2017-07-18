@@ -5,6 +5,7 @@ import os
 from getfiles import getfileslist
 from mp3idmaker import SongList
 
+
 class loadui(QtWidgets.QMainWindow):
     def __init__(self, ui_path, parent=None):
         QtWidgets.QMainWindow.__init__(self, parent)
@@ -12,9 +13,6 @@ class loadui(QtWidgets.QMainWindow):
         self.ui = Form()
         self.ui.setupUi(self)
         self.resize(1200, 600)
-        # self.ui = uic.loadUi(ui_path)
-        # self.ui.resize(1000, 500)
-        # self.ui.show()
         self.ui.TableView.setColumnWidth(0, 150)
         self.ui.TableView.setColumnWidth(1, 120)
         self.ui.TableView.setColumnWidth(2, 120)
@@ -31,8 +29,6 @@ class loadui(QtWidgets.QMainWindow):
         self.ui.TableView.clicked.connect(self.displaytags)
         self.ui.PBapply.clicked.connect(self.apply_)
         self.ui.PBapplytoall.clicked.connect(self.applytoall_)
-        # self.ui.pBDoSmthng.clicked.connect(self.on_click)
-        # self.ui.pBDoAnother.clicked.connect(self.on_click_another)
 
     def setupUi_shortcuts(self):
         self.shortcuts = []
@@ -51,64 +47,28 @@ class loadui(QtWidgets.QMainWindow):
         dirmodel = self.getdirmodel(workdir_)
         self.ui.TableView.setModel(dirmodel)
 
-
     def getdirmodel(self, workdir_):
         fileslist = getfileslist(os.path.normcase(workdir_))
         self.songlist = SongList(fileslist)
         dirmodel = QtGui.QStandardItemModel()
         dirlist = self.songlist.createtable()
-        # dirlist = ['', '']
-        # if fileslist:
-        #     dirlist[0] = [os.path.basename(x) for x in fileslist]
-        #     dirlist[1] = [str(len(x) * 3 + 17) for x in fileslist]
-        # else:
-        #     dirlist[0] = dirlist[1] = ['']
-
         dirlist = [[QtGui.QStandardItem(x) for x in list_] for list_ in dirlist]
-       # for list in dirlist:
-        #    for item in list:
-         #       item = QtGui.QStandardItem(item)
-
-
-
         for list_ in dirlist:
             dirmodel.appendRow(list_)
-
-        # for row in range(len(list2)):
-        #     item1 = QtGui.QStandardItem(list1[row])
-        #     item2 = QtGui.QStandardItem(list2[row])
-        #     dirmodel.appendRow([item1, item2])
-        #
         dirmodel.setHorizontalHeaderLabels(['Filename'] + list(self.songlist.tablegraphs))
         return dirmodel
 
     def selectFile(self):
-        #pass
-        #self.ui.Edit_path.setText(QFileDialog.getOpenFileName())
-        # filee = QtWidgets.QFileDialog.getExistingDirectory()
-        # print(filee)
-        #self.ui.Edit_path.setText(str(filee))
-        #self.fileDialog.exec()
-        #print(QtWidgets.QFileDialog.getOpenFileName())
         self.filedialog = QtWidgets.QFileDialog()
         self.filedialog.setFileMode(2)
         self.filedialog.setLabelText(3,'Выбор рабочего каталога')
         self.filedialog.exec()
-        # print(self.workdir)
         dir_value = self.filedialog.selectedFiles()
-        # print(dir_value)
         if dir_value[0] != self.workdir:
-            # print('hi')
             self.workdir = dir_value[0]
             self.showpath(self.workdir)
             self.showdir(self.workdir)
         self.activateWindow()
-        # print(self.workdir)
-        # print(type(self.workdir))
-        # self.workdir = str(self.workdir).replace(r'/', '\\')
-
-        # print(self.workdir)
-        # print(type(self.workdir))
 
     def __getrow(self):
         return self.ui.TableView.selectedIndexes()[0].row()
@@ -154,7 +114,6 @@ class loadui(QtWidgets.QMainWindow):
             self.ui.TableView.selectRow(row_)
         except:
             pass
-        #print(row_)
 
     def applytoall_(self):
         try:
@@ -165,7 +124,6 @@ class loadui(QtWidgets.QMainWindow):
             self.showdir(self.workdir)
         except:
             pass
-        #self.songlist.changetagsforall(self.songlist, )
 
     def __testjoke(self):
         self.ui.Edit_path.setText("НЕ ЖМИ ЭТОТ КНОПКА!")
@@ -173,13 +131,13 @@ class loadui(QtWidgets.QMainWindow):
     def __testtest(self, str_='!!'):
         self.ui.Edit_path.setText("It's working!" + str_)
 
+
 def loadicons(window, application):
     ico = QtGui.QIcon(ini.icon_path_main)
     ico_folder = QtGui.QIcon(ini.icon_path_folder)
     window.setWindowIcon(ico)
     application.setWindowIcon(ico)
     window.ui.PBchoosedirectory.setIcon(ico_folder)
-
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
@@ -189,5 +147,3 @@ if __name__ == '__main__':
     mainwin.setupUi_shortcuts()
     mainwin.show()
     sys.exit(app.exec_())
-
-    #D:\CodeProjects\Qt\pirate
