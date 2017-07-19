@@ -4,6 +4,7 @@ from os.path import basename
 import re
 import ini
 
+
 class SongList:
     vocabulary = {
         'title':       ('TIT2',         id3.TIT2),
@@ -23,9 +24,9 @@ class SongList:
     tablegraphs = ('artist', 'album', 'year', 'genre', 'tracknum', 'title')
 
     def __init__(self, fileslist):
-        self.list_ = [[basename(path), self._getid3(path)] for path in fileslist]
+        self.list_ = [[basename(path), self.__getid3(path)] for path in fileslist]
 
-    def _getid3(self, path_):
+    def __getid3(self, path_):
         try:
             return id3.ID3(path_)
         except:
@@ -37,7 +38,7 @@ class SongList:
     def __getitem__(self, item):
         return self.list_[item]
 
-    def print(self, full = 0, pic = False):
+    def print(self, full=0, pic=False):
         for song in self.list_:
             print(song[0])
             if full == 1:
@@ -53,7 +54,7 @@ class SongList:
                 print(song[1])
             print()
 
-    def _getvalue(self, tag_value, path):
+    def __getvalue(self, tag_value, path):
         if tag_value[1]:
             return re.search(tag_value[0], path).group()
         else:
@@ -64,7 +65,7 @@ class SongList:
             for word in self.vocabulary:
                 try:
                     song[1][self.vocabulary[word][0]] = self.vocabulary[word][1]\
-                        (text=self._getvalue(dict_[word], song[0]))
+                        (text=self.__getvalue(dict_[word], song[0]))
                 except:
                     pass
 
@@ -73,7 +74,7 @@ class SongList:
         for word in self.vocabulary:
             try:
                 song_[1][self.vocabulary[word][0]] = self.vocabulary[word][1]\
-                    (text=self._getvalue(dict_[word], song_[0]))
+                    (text=self.__getvalue(dict_[word], song_[0]))
             except:
                 pass
 
@@ -84,7 +85,7 @@ class SongList:
     def save(self, songnum):
         self.list_[songnum][1].save()
 
-    def _checkforvalue(self, song_, word_):
+    def __checkforvalue(self, song_, word_):
         try:
             return str(song_[word_])
         except:
@@ -92,9 +93,9 @@ class SongList:
 
     def createtable(self):
         table = [[song[0]] +
-                    [self._checkforvalue(song[1], self.vocabulary[word][0])
-                        for word in self.tablegraphs]
-                for song in self.list_]
+                 [self.__checkforvalue(song[1], self.vocabulary[word][0])
+                  for word in self.tablegraphs]
+                 for song in self.list_]
         return table
 
     def gettag(self, row_, tagname):
@@ -109,6 +110,7 @@ def mainbody():
     songlist = SongList(fileslist)
     songlist.changetags(ini.tagdict)
     songlist.save()
+
 
 def testbody():
     fileslist = getfileslist(ini.folder[9])
@@ -130,6 +132,7 @@ def testbody():
     print(re.search(ini.tagdict['title'][0], songlist[0][0]).group())
     #print(songlist.createtable())
     # print(songlist[6][1])
+
 
 def anothertestbody():
     fileslist = getfileslist(ini.folder[7])

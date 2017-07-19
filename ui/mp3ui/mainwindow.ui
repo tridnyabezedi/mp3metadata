@@ -13,9 +13,8 @@
   <property name="windowTitle">
    <string>mp3 ID3v2 modifier</string>
   </property>
-  <property name="windowIcon">
-   <iconset>
-    <normaloff>../../PyCharm/mp3metadata/icons/11949967862046187178kid3.svg.med.png</normaloff>../../PyCharm/mp3metadata/icons/11949967862046187178kid3.svg.med.png</iconset>
+  <property name="animated">
+   <bool>false</bool>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QHBoxLayout" name="horizontalLayout_4">
@@ -74,10 +73,6 @@
             </property>
             <property name="text">
              <string/>
-            </property>
-            <property name="icon">
-             <iconset>
-              <normaloff>../../PyCharm/mp3metadata/icons/folder-icon.png</normaloff>../../PyCharm/mp3metadata/icons/folder-icon.png</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -637,8 +632,6 @@
      </layout>
     </item>
    </layout>
-   <zorder>plainTextEdit</zorder>
-   <zorder>horizontalLayoutWidget</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -675,7 +668,7 @@
     <enum>TopToolBarArea</enum>
    </attribute>
    <attribute name="toolBarBreak">
-    <bool>true</bool>
+    <bool>false</bool>
    </attribute>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>

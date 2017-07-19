@@ -4,14 +4,16 @@ import ini
 import os
 from getfiles import getfileslist
 from mp3idmaker import SongList
+from ui.mp3ui.mainwindow import Ui_MainWindow
 
 
-class loadui(QtWidgets.QMainWindow):
-    def __init__(self, ui_path, parent=None):
-        QtWidgets.QMainWindow.__init__(self, parent)
-        Form, Base = uic.loadUiType(ui_path)
-        self.ui = Form()
-        self.ui.setupUi(self)
+class LoadUi(QtWidgets.QMainWindow):
+    def __init__(self, ui_path, uiorpy=True, parent=None):
+        QtWidgets.QMainWindow.__init__(self)
+        if uiorpy:
+            self.__loadfromui(ui_path)
+        else:
+            self.__loadfrompy(ui_path)
         self.resize(1200, 600)
         self.ui.TableView.setColumnWidth(0, 150)
         self.ui.TableView.setColumnWidth(1, 120)
@@ -23,6 +25,15 @@ class loadui(QtWidgets.QMainWindow):
         self.workdir = os.getcwd()
         self.showpath(self.workdir)
         self.showdir(self.workdir)
+
+    def __loadfromui(self, ui_path_):
+        Form, Base = uic.loadUiType(ui_path_)
+        self.ui = Form()
+        self.ui.setupUi(self)
+
+    def __loadfrompy(self, ui_path_):
+        self.ui = Ui_MainWindow()
+        self.ui.setupUi(self)
 
     def setupUi_buttons(self):
         self.ui.PBchoosedirectory.clicked.connect(self.selectFile)
@@ -61,7 +72,7 @@ class loadui(QtWidgets.QMainWindow):
     def selectFile(self):
         self.filedialog = QtWidgets.QFileDialog()
         self.filedialog.setFileMode(2)
-        self.filedialog.setLabelText(3,'Выбор рабочего каталога')
+        self.filedialog.setLabelText(3, 'Выбор рабочего каталога')
         self.filedialog.exec()
         dir_value = self.filedialog.selectedFiles()
         if dir_value[0] != self.workdir:
@@ -106,8 +117,8 @@ class loadui(QtWidgets.QMainWindow):
         try:
             dict_ = self.__readvalues()
             row_ = self.__getrow()
-            print(dict_)
-            print(row_)
+            # print(dict_)
+            # print(row_)
             self.songlist.changetags(row_, dict_)
             self.songlist.save(row_)
             self.showdir(self.workdir)
@@ -118,7 +129,7 @@ class loadui(QtWidgets.QMainWindow):
     def applytoall_(self):
         try:
             dict_ = self.__readvalues()
-            print(dict_)
+            # print(dict_)
             self.songlist.changetagsforall(dict_)
             self.songlist.saveall()
             self.showdir(self.workdir)
@@ -141,8 +152,8 @@ def loadicons(window, application):
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
-    mainwin = loadui(ini.ui_path) #uic.loadUi("pirate.ui")
-    loadicons(mainwin, app)
+    mainwin = LoadUi(ini.ui_path, uiorpy=False)   # uic.loadUi("pirate.ui")
+   # loadicons(mainwin, app)
     mainwin.setupUi_buttons()
     mainwin.setupUi_shortcuts()
     mainwin.show()
