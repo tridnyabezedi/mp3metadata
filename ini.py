@@ -1,15 +1,18 @@
-icon_path_main = r'D:\CodeProjects\PyCharm\mp3metadata\ico' \
-                 r'ns\11949967862046187178kid3.svg.med.png'
-icon_path_folder = r'D:\CodeProjects\PyCharm\mp3metadata\ico' \
-                   r'ns\folder-icon.png'
-# ui_path = r'D:\CodeProjects\Qt\mp3ui\mainwindow.ui'
-# ui_path = r'D:\CodeProjects\PyCharm\mp3metadata\ui\mp3ui\mainwindow.ui'
-# ui_path_py = r'D:\CodeProjects\PyCharm\mp3metadata\ui\mp3ui\mainwindow.py'
-ui_path = r'\ui\mp3ui\mainwindow.ui'
-ui_path_py = r'\ui\mp3ui\mainwindow.py'
+icon_path_main = r'.\icons\11949967862046187178kid3.svg.med.png'
+icon_path_folder = r'.\icons\folder-icon.png'
+ui_path_ui = r'.\ui\mp3ui\mainwindow.ui'
+ui_path_py = r'.\ui\mp3ui\mainwindow.py'
+uiorpy = True # True = ui, False = py
+# if uiorpy:
+#     ui_path = ui_path_ui
+# else:
+#     ui_path = ui_path_py
 # /re/:\D[\w]+(\s*[\w]+)*
 # /re/:[^\d\s][\w]+(\s*[\w()]+)*
 # /re/:[^\d\s][\w()]+(\s*[\w()]+)*
+# ui_path = r'D:\CodeProjects\Qt\mp3ui\mainwindow.ui'
+# ui_path = r'D:\CodeProjects\PyCharm\mp3metadata\ui\mp3ui\mainwindow.ui'
+# ui_path_py = r'D:\CodeProjects\PyCharm\mp3metadata\ui\mp3ui\mainwindow.py'
 
 # ===================================================================================
 # =============================== FOR TEST PURPOSES =================================

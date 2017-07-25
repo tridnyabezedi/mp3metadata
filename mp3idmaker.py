@@ -4,7 +4,6 @@ from os.path import basename
 import re
 import ini
 
-
 class SongList:
     vocabulary = {
         'title':       ('TIT2',         id3.TIT2),
@@ -23,7 +22,9 @@ class SongList:
 
     tablegraphs = ('artist', 'album', 'year', 'genre', 'tracknum', 'title')
 
-    def __init__(self, fileslist):
+    def __init__(self, path_to_folder):
+        # fileslist = getfileslist(os.path.normcase(workdir_))
+        fileslist = getfileslist(path_to_folder)
         self.list_ = [[basename(path), self.__getid3(path)] for path in fileslist]
 
     def __getid3(self, path_):
@@ -145,7 +146,7 @@ def anothertestbody():
         #print (tag, songlist[0][1][tag])
     #print(songlist[1][1])
     songlist.print(full=2)
-    # for word in songlist.vocabulary:
+    # for word in songlist.fary:
     #     print(word, songlist.gettag(1, word))
 
 if __name__ == '__main__':

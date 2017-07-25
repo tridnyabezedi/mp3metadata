@@ -7,14 +7,31 @@ from mp3idmaker import SongList
 from ui.mp3ui.mainwindow import Ui_MainWindow
 
 
-class LoadUi(QtWidgets.QMainWindow):
-    def __init__(self, ui_path, uiorpy=True, parent=None):
+class UiView(QtWidgets.QMainWindow):
+    signal_select_dir = QtCore.pyqtSignal('QString')
+    signal_apply_to_one = QtCore.pyqtSignal()
+    signal_apply_to_all = QtCore.pyqtSignal()
+    signal_choose_song = QtCore.pyqtSignal(int)
+
+    def __init__(self, application, parent=None):
         QtWidgets.QMainWindow.__init__(self)
-        if uiorpy:
-            self.__loadfromui(ui_path)
+        if ini.uiorpy:
+            self.__load_from_ui(ini.ui_path_ui)
         else:
-            self.__loadfrompy(ui_path)
+            self.__load_from_py(ini.ui_path_py)
+        self.__load_icons(application)
+        self.setupUi_buttons()
+        self.setupUi_shortcuts(application)
+        self.__setup_filedialog()
+        self.__set_table_props()
         self.resize(1200, 600)
+
+    def __setup_filedialog(self):
+        self.filedialog = QtWidgets.QFileDialog()
+        self.filedialog.setFileMode(2)
+        self.filedialog.setLabelText(3, 'Выбор рабочего каталога')
+
+    def __set_table_props(self):
         self.ui.TableView.setColumnWidth(0, 150)
         self.ui.TableView.setColumnWidth(1, 120)
         self.ui.TableView.setColumnWidth(2, 120)
@@ -22,78 +39,106 @@ class LoadUi(QtWidgets.QMainWindow):
         self.ui.TableView.setColumnWidth(4, 90)
         self.ui.TableView.setColumnWidth(5, 70)
         self.ui.TableView.setColumnWidth(6, 200)
-        self.workdir = os.getcwd()
-        self.showpath(self.workdir)
-        self.showdir(self.workdir)
 
-    def __loadfromui(self, ui_path_):
-        Form, Base = uic.loadUiType(ui_path_)
-        self.ui = Form()
+    def __load_icons(self, application):
+        ico = QtGui.QIcon(ini.icon_path_main)
+        ico_folder = QtGui.QIcon(ini.icon_path_folder)
+        self.setWindowIcon(ico)
+        application.setWindowIcon(ico)
+        self.ui.PBchoosedirectory.setIcon(ico_folder)
+
+    def __load_from_ui(self, ui_path_):
+        form, base = uic.loadUiType(ui_path_)
+        self.ui = form()
         self.ui.setupUi(self)
 
-    def __loadfrompy(self, ui_path_):
+    def __load_from_py(self, ui_path_):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
     def setupUi_buttons(self):
-        self.ui.PBchoosedirectory.clicked.connect(self.selectFile)
-        self.ui.TableView.clicked.connect(self.displaytags)
-        self.ui.PBapply.clicked.connect(self.apply_)
-        self.ui.PBapplytoall.clicked.connect(self.applytoall_)
+        self.ui.PBchoosedirectory.clicked.connect(self.select_dir)
+        self.ui.TableView.clicked.connect(self.display_tags)
+        self.ui.PBapply.clicked.connect(self.apply_to_one)
+        self.ui.PBapplytoall.clicked.connect(self.apply_to_all)
 
-    def setupUi_shortcuts(self):
+    def setupUi_shortcuts(self, app):
         self.shortcuts = []
-        self.__setshortcut("Ctrl+O", self.selectFile)
-        self.__setshortcut("Q", self.selectFile)
+        self.__setshortcut("Ctrl+O", self.select_dir)
+        self.__setshortcut("Q", self.select_dir)
         self.__setshortcut("F1", self.__testjoke)
+        self.__setshortcut("Esc", app.exit)
 
     def __setshortcut(self, shortcut_, fuction):
         self.shortcuts.append(QtWidgets.QShortcut(QtGui.QKeySequence(shortcut_), self))
         self.shortcuts[-1].activated.connect(fuction)
 
-    def showpath(self, workdir_):
-        self.ui.Edit_path.setText(str(workdir_).replace(r'/', '\\'))
+    def showpath(self, workdir):
+        self.ui.Edit_path.setText(workdir)
 
-    def showdir(self, workdir_):
-        dirmodel = self.getdirmodel(workdir_)
+    def showdir(self, dirmodel):
         self.ui.TableView.setModel(dirmodel)
 
-    def getdirmodel(self, workdir_):
-        fileslist = getfileslist(os.path.normcase(workdir_))
-        self.songlist = SongList(fileslist)
-        dirmodel = QtGui.QStandardItemModel()
-        dirlist = self.songlist.createtable()
-        dirlist = [[QtGui.QStandardItem(x) for x in list_] for list_ in dirlist]
-        for list_ in dirlist:
-            dirmodel.appendRow(list_)
-        dirmodel.setHorizontalHeaderLabels(['Filename'] + list(self.songlist.tablegraphs))
-        return dirmodel
-
-    def selectFile(self):
-        self.filedialog = QtWidgets.QFileDialog()
-        self.filedialog.setFileMode(2)
-        self.filedialog.setLabelText(3, 'Выбор рабочего каталога')
+    def select_dir(self):
         self.filedialog.exec()
         dir_value = self.filedialog.selectedFiles()
-        if dir_value[0] != self.workdir:
-            self.workdir = dir_value[0]
-            self.showpath(self.workdir)
-            self.showdir(self.workdir)
+        self.signal_select_dir.emit(str(dir_value[0]))
         self.activateWindow()
 
     def __getrow(self):
         return self.ui.TableView.selectedIndexes()[0].row()
 
-    def displaytags(self):
+    def display_tags(self):
         row_ = self.__getrow()
-        self.ui.Edit_track.setText(self.songlist.gettag(row_, 'tracknum'))
-        self.ui.Edit_artist.setText(self.songlist.gettag(row_, 'artist'))
-        self.ui.Edit_title.setText(self.songlist.gettag(row_, 'title'))
-        self.ui.Edit_album.setText(self.songlist.gettag(row_, 'album'))
-        self.ui.Edit_author.setText(self.songlist.gettag(row_, 'author'))
-        self.ui.Edit_year.setText(self.songlist.gettag(row_, 'year'))
-        self.ui.Edit_genre.setText(self.songlist.gettag(row_, 'genre'))
-        self.ui.TextEdit_comment.setPlainText(self.songlist.gettag(row_, 'comment'))
+        self.signal_choose_song.emit(row_)
+
+    def get_track_num(self):
+        return self.ui.Edit_track.text()
+
+    def get_artist(self):
+        return self.ui.Edit_artist.text()
+
+    def get_title(self):
+        return self.ui.Edit_title.text()
+
+    def get_album(self):
+        return self.ui.Edit_album.text()
+
+    def get_author(self):
+        return self.ui.Edit_author.text()
+
+    def get_year(self):
+        return self.ui.Edit_year.text()
+
+    def get_genre(self):
+        return self.ui.Edit_genre.text()
+
+    def get_comment(self):
+        return self.ui.TextEdit_comment.toPlainText()
+
+    def set_track_num(self, text):
+        self.ui.Edit_track.setText(text)
+
+    def set_artist(self, text):
+        self.ui.Edit_artist.setText(text)
+
+    def set_title(self, text):
+        self.ui.Edit_title.setText(text)
+
+    def set_album(self, text):
+        self.ui.Edit_album.setText(text)
+
+    def set_author(self, text):
+        self.ui.Edit_author.setText(text)
+
+    def set_year(self, text):
+        self.ui.Edit_year.setText(text)
+
+    def set_genre(self, text):
+        self.ui.Edit_genre.setText(text)
+
+    def set_comment(self, text):
+        self.ui.TextEdit_comment.setPlainText(text)
 
     def __readvalues(self):
         #row_ = self.__getrow()
@@ -113,7 +158,7 @@ class LoadUi(QtWidgets.QMainWindow):
                 dict_[word_] = (dict_[word_], False)
         return dict_
 
-    def apply_(self):
+    def apply_to_one(self):
         try:
             dict_ = self.__readvalues()
             row_ = self.__getrow()
@@ -126,7 +171,7 @@ class LoadUi(QtWidgets.QMainWindow):
         except:
             pass
 
-    def applytoall_(self):
+    def apply_to_all(self):
         try:
             dict_ = self.__readvalues()
             # print(dict_)
@@ -152,7 +197,7 @@ def loadicons(window, application):
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
-    mainwin = LoadUi(ini.ui_path, uiorpy=False)   # uic.loadUi("pirate.ui")
+    mainwin = UiView(app)   # uic.loadUi("pirate.ui")
    # loadicons(mainwin, app)
     mainwin.setupUi_buttons()
     mainwin.setupUi_shortcuts()
