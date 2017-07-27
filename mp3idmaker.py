@@ -4,28 +4,13 @@ from os.path import basename
 import re
 import ini
 
-class SongList:
-    vocabulary = {
-        'title':       ('TIT2',         id3.TIT2),
-        'album':       ('TALB',         id3.TALB),
-        'tracknum':    ('TRCK',         id3.TRCK),
-        'artist':      ('TPE1',         id3.TPE1),
-        'author':      ('TPE2',         id3.TPE2),
-        'disk':        ('TPOS',         id3.TPOS),
-        'year':        ('TDRC',         id3.TDRC),
-        'genre':       ('TCON',         id3.TCON),
-        'comment':     ('COMM',         id3.COMM),    # 'COMM::eng'
-        # ('url', 'WXXX', id3.WXXX),
-        'encode':      ('TENC',         id3.TENC),
-        'authority':   ('TCOP',         id3.TCOP)
-    }
+class Song:
+    vocabulary = ini.vocabulary
 
-    tablegraphs = ('artist', 'album', 'year', 'genre', 'tracknum', 'title')
-
-    def __init__(self, path_to_folder):
-        # fileslist = getfileslist(os.path.normcase(workdir_))
-        fileslist = getfileslist(path_to_folder)
-        self.list_ = [[basename(path), self.__getid3(path)] for path in fileslist]
+    def __init__(self, path):
+        self.id3tag = self.__getid3(path)
+        self.path = path
+        self.filename = basename(path)
 
     def __getid3(self, path_):
         try:
@@ -33,15 +18,46 @@ class SongList:
         except:
             return {}
 
+    def __getitem__(self, item):
+        try:
+            return self.id3tag[item]
+        except:
+            return ''
+
     def __str__(self):
-        pass
+        tempstr = ''
+        for key in self.id3tag:
+            if key != r'APIC:':
+                tempstr += '        {}: {}\n'.format(key, self.id3tag[key])
+        return 'Filename: {0}\n' \
+               'Tags:\n{2}'.format(self.filename, self.path, tempstr)
+
+
+class SongList:
+    def __init__(self, path_to_folder):
+        # fileslist = getfileslist(os.path.normcase(workdir_))
+        fileslist = getfileslist(path_to_folder)
+        self.list_ = [Song(path) for path in fileslist]
+        self.path = path_to_folder
+
+    def __call__(self, *args, **kwargs):
+        return self.list_
+
+    def __str__(self):
+        return str(self())
 
     def __getitem__(self, item):
         return self.list_[item]
 
+    def song(self, songnum):
+        if songnum <= len(self.list_):
+            return self.list_[songnum]
+        else:
+            raise IndexError
+
     def print(self, full=0, pic=False):
+        print('Folder: {}'.format(self.path))
         for song in self.list_:
-            print(song[0])
             if full == 1:
                 print(song[1].keys())
                 for tag in song[1]:
@@ -53,6 +69,8 @@ class SongList:
                 except:
                     pass
                 print(song[1])
+            elif full == 3:
+                print (song)
             print()
 
     def __getvalue(self, tag_value, path):
@@ -86,18 +104,18 @@ class SongList:
     def save(self, songnum):
         self.list_[songnum][1].save()
 
-    def __checkforvalue(self, song_, word_):
-        try:
-            return str(song_[word_])
-        except:
-            return ''
-
-    def createtable(self):
-        table = [[song[0]] +
-                 [self.__checkforvalue(song[1], self.vocabulary[word][0])
-                  for word in self.tablegraphs]
-                 for song in self.list_]
-        return table
+    # def __checkforvalue(self, song_, word_):
+    #     try:
+    #         return str(song_[word_])
+    #     except:
+    #         return ''
+    #
+    # def createtable(self):
+    #     table = [[song[0]] +
+    #              [self.__checkforvalue(song[1], self.vocabulary[word][0])
+    #               for word in self.tablegraphs]
+    #              for song in self.list_]
+    #     return table
 
     def gettag(self, row_, tagname):
         try:
@@ -105,21 +123,20 @@ class SongList:
         except:
             return ''
 
-
 def mainbody():
     fileslist = getfileslist(ini.folder[0])
     songlist = SongList(fileslist)
     songlist.changetags(ini.tagdict)
     songlist.save()
 
-
 def testbody():
-    fileslist = getfileslist(ini.folder[9])
+    fileslist = ini.folder[2]
     songlist = SongList(fileslist)
     # songlist.print()
-    songlist.changetags(ini.tagdict)
-    songlist.print(full=True)
-    songlist.save()
+    #songlist.changetags(ini.tagdict)
+    # songlist.print(full=3)
+    print(songlist)
+    #songlist.save()
     # print()
     #print(songlist[0][0])
     #print(songlist[0][1])
@@ -127,28 +144,28 @@ def testbody():
     # print(ini.album)
     # match = re.search(ini.tracknum, songlist[3][0])
     # print(match.group())
-    print(re.search(ini.tracknum, songlist[0][0]).group())
-    print(re.search(ini.title, songlist[0][0]).group())
-    print(re.search(ini.tagdict['tracknum'][0], songlist[0][0]).group())
-    print(re.search(ini.tagdict['title'][0], songlist[0][0]).group())
+    # print(re.search(ini.tracknum, songlist[0][0]).group())
+    # print(re.search(ini.title, songlist[0][0]).group())
+    # print(re.search(ini.tagdict['tracknum'][0], songlist[0][0]).group())
+    # print(re.search(ini.tagdict['title'][0], songlist[0][0]).group())
     #print(songlist.createtable())
     # print(songlist[6][1])
 
-
 def anothertestbody():
-    fileslist = getfileslist(ini.folder[7])
-    print(fileslist)
-    songlist = SongList(fileslist)
+    fileslist = getfileslist(ini.folder[1])
+    # print(fileslist)
+
+    # songlist = SongList(fileslist)
    # [[print(xx) for xx in x] for x in songlist.createtable()]
     #[print(x) for x in songlist.createtable()]
     # songlist.print(full=True)
     #for tag in songlist[0][1]:
         #print (tag, songlist[0][1][tag])
     #print(songlist[1][1])
-    songlist.print(full=2)
+    # songlist.print(full=2)
     # for word in songlist.fary:
     #     print(word, songlist.gettag(1, word))
 
 if __name__ == '__main__':
-    anothertestbody()
-    #testbody()
+    #anothertestbody()
+    testbody()

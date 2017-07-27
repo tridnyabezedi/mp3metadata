@@ -13,6 +13,12 @@ class Presenter:
         self.workdir = ini.folder[8] # os.getcwd()
         self.refresh_view()
 
+    def connect_signals(self):
+        self.view.signal_select_dir.connect(self.select_dir)
+        self.view.signal_choose_song.connect(self.display_tags)
+        self.view.signal_apply_to_one.connect(self.apply_to_one)
+        self.view.signal_apply_to_all.connect(self.apply_to_all)
+
     def refresh_view(self):
         self.songlist = SongList(self.workdir)
         self.show_path()
@@ -26,19 +32,24 @@ class Presenter:
         self.view.showdir(dirmodel)
 
     def get_dir_model(self):
+        def check_for_value(song_, tag):
+            try:
+                return str(song_[tag])
+            except:
+                return ''
+        def createtable():
+            table = [[song.filename] +
+                     [check_for_value(song, ini.vocabulary[word][0])
+                      for word in ini.tablegraphs[0]]
+                     for song in self.songlist]
+            return table
         dirmodel = QtGui.QStandardItemModel()
-        dirlist = self.songlist.createtable()
+        dirlist = createtable()
         dirlist = [[QtGui.QStandardItem(x) for x in list_] for list_ in dirlist]
         for list_ in dirlist:
             dirmodel.appendRow(list_)
-        dirmodel.setHorizontalHeaderLabels(['Filename'] + list(self.songlist.tablegraphs))
+        dirmodel.setHorizontalHeaderLabels(list(ini.tablegraphs[1]))
         return dirmodel
-
-    def connect_signals(self):
-        self.view.signal_select_dir.connect(self.select_dir)
-        self.view.signal_choose_song.connect(self.display_tags)
-        self.view.signal_apply_to_one.connect(self.apply_to_one)
-        self.view.signal_apply_to_all.connect(self.apply_to_all)
 
     def select_dir(self, path_to_folder):
         if path_to_folder != self.workdir:
@@ -46,9 +57,9 @@ class Presenter:
             self.refresh_view()
 
     def display_tags(self, row_):
-        val = self.songlist.list_[row_][1][self.songlist.vocabulary['tracknum'][0]]
-        self.view.set_track_num(str(val))
-        self.view.set_album('dddddddd')
+        song = self.songlist[row_]
+        self.view.set_track_num(song['tracknum'])
+        self.view.set_album('ffff')
         self.view.set_artist('ddddddd')
         self.view.set_comment('dfdfdfdgfzzzsdjf ksjsik jkd sksdjkgsj  sj gklsjg sgls ks   s'
                               'sdjg kjsk sj sgj slkglwjijujgjg]q[m z?Sknzskgjnrvji'

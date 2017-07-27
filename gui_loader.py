@@ -39,6 +39,10 @@ class UiView(QtWidgets.QMainWindow):
         self.ui.TableView.setColumnWidth(4, 90)
         self.ui.TableView.setColumnWidth(5, 70)
         self.ui.TableView.setColumnWidth(6, 200)
+        # for i, width in enumerate(ini.tablegraphs[2]):
+        #     print (i, width)
+        #     self.ui.TableView.setColumnWidth(i, width)
+
 
     def __load_icons(self, application):
         ico = QtGui.QIcon(ini.icon_path_main)
@@ -92,6 +96,47 @@ class UiView(QtWidgets.QMainWindow):
         row_ = self.__getrow()
         self.signal_choose_song.emit(row_)
 
+    def __readvalues(self):
+        #row_ = self.__getrow()
+        dict_ = {}
+        dict_['tracknum'] = self.ui.Edit_track.text()
+        dict_['artist'] = self.ui.Edit_artist.text()
+        dict_['title'] = self.ui.Edit_title.text()
+        dict_['album'] = self.ui.Edit_album.text()
+        dict_['author'] = self.ui.Edit_author.text()
+        dict_['year'] = self.ui.Edit_year.text()
+        dict_['genre'] = self.ui.Edit_genre.text()
+        dict_['comment'] = self.ui.TextEdit_comment.toPlainText()
+        for word_ in dict_:
+            if dict_[word_].startswith(r"/re/:"):
+                dict_[word_] = (dict_[word_][5:], True)
+            else:
+                dict_[word_] = (dict_[word_], False)
+        return dict_
+
+    def apply_to_one(self):
+        try:
+            dict_ = self.__readvalues()
+            row_ = self.__getrow()
+            # print(dict_)
+            # print(row_)
+            self.songlist.changetags(row_, dict_)
+            self.songlist.save(row_)
+            self.showdir(self.workdir)
+            self.ui.TableView.selectRow(row_)
+        except:
+            pass
+
+    def apply_to_all(self):
+        try:
+            dict_ = self.__readvalues()
+            # print(dict_)
+            self.songlist.changetagsforall(dict_)
+            self.songlist.saveall()
+            self.showdir(self.workdir)
+        except:
+            pass
+
     def get_track_num(self):
         return self.ui.Edit_track.text()
 
@@ -139,47 +184,6 @@ class UiView(QtWidgets.QMainWindow):
 
     def set_comment(self, text):
         self.ui.TextEdit_comment.setPlainText(text)
-
-    def __readvalues(self):
-        #row_ = self.__getrow()
-        dict_ = {}
-        dict_['tracknum'] = self.ui.Edit_track.text()
-        dict_['artist'] = self.ui.Edit_artist.text()
-        dict_['title'] = self.ui.Edit_title.text()
-        dict_['album'] = self.ui.Edit_album.text()
-        dict_['author'] = self.ui.Edit_author.text()
-        dict_['year'] = self.ui.Edit_year.text()
-        dict_['genre'] = self.ui.Edit_genre.text()
-        dict_['comment'] = self.ui.TextEdit_comment.toPlainText()
-        for word_ in dict_:
-            if dict_[word_].startswith(r"/re/:"):
-                dict_[word_] = (dict_[word_][5:], True)
-            else:
-                dict_[word_] = (dict_[word_], False)
-        return dict_
-
-    def apply_to_one(self):
-        try:
-            dict_ = self.__readvalues()
-            row_ = self.__getrow()
-            # print(dict_)
-            # print(row_)
-            self.songlist.changetags(row_, dict_)
-            self.songlist.save(row_)
-            self.showdir(self.workdir)
-            self.ui.TableView.selectRow(row_)
-        except:
-            pass
-
-    def apply_to_all(self):
-        try:
-            dict_ = self.__readvalues()
-            # print(dict_)
-            self.songlist.changetagsforall(dict_)
-            self.songlist.saveall()
-            self.showdir(self.workdir)
-        except:
-            pass
 
     def __testjoke(self):
         self.ui.Edit_path.setText("НЕ ЖМИ ЭТОТ КНОПКА!")

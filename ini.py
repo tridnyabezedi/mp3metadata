@@ -1,8 +1,30 @@
+from mutagen import id3
+
 icon_path_main = r'.\icons\11949967862046187178kid3.svg.med.png'
 icon_path_folder = r'.\icons\folder-icon.png'
 ui_path_ui = r'.\ui\mp3ui\mainwindow.ui'
 ui_path_py = r'.\ui\mp3ui\mainwindow.py'
 uiorpy = True # True = ui, False = py
+vocabulary = {
+    'title':        ('TIT2', id3.TIT2),
+    'album':        ('TALB', id3.TALB),
+    'tracknum':     ('TRCK', id3.TRCK),
+    'artist':       ('TPE1', id3.TPE1),
+    'author':       ('TPE2', id3.TPE2),
+    'disk':         ('TPOS', id3.TPOS),
+    'year':         ('TDRC', id3.TDRC),
+    'genre':        ('TCON', id3.TCON),
+    'comment':      ('COMM', id3.COMM),  # 'COMM::eng'
+    # ('url', 'WXXX', id3.WXXX),
+    'encode':       ('TENC', id3.TENC),
+    'authority':    ('TCOP', id3.TCOP)
+}
+
+tablegraphs = (('artist', 'album', 'year', 'genre', 'tracknum', 'title'),   # Graphs order
+    ('Filename', 'Artist', 'Album', 'Year', 'Genre', '#',       'Title'),   # Graphs names
+    (150,       120,       120,     50,     90,      40,         200))      # TableView columns width (
+
+
 # if uiorpy:
 #     ui_path = ui_path_ui
 # else:
@@ -56,3 +78,4 @@ tagdict = {
 if __name__ == '__main__':
     print(tagdict['album'])
     print(tagdict.keys())
+    print(tablegraphs[2])
