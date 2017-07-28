@@ -9,7 +9,7 @@ from ui.mp3ui.mainwindow import Ui_MainWindow
 
 class UiView(QtWidgets.QMainWindow):
     signal_select_dir = QtCore.pyqtSignal('QString')
-    signal_apply_to_one = QtCore.pyqtSignal()
+    signal_apply_to_one = QtCore.pyqtSignal(int)
     signal_apply_to_all = QtCore.pyqtSignal()
     signal_choose_song = QtCore.pyqtSignal(int)
 
@@ -31,18 +31,18 @@ class UiView(QtWidgets.QMainWindow):
         self.filedialog.setFileMode(2)
         self.filedialog.setLabelText(3, 'Выбор рабочего каталога')
 
-    def __set_table_props(self):
-        self.ui.TableView.setColumnWidth(0, 150)
-        self.ui.TableView.setColumnWidth(1, 120)
-        self.ui.TableView.setColumnWidth(2, 120)
-        self.ui.TableView.setColumnWidth(3, 50)
-        self.ui.TableView.setColumnWidth(4, 90)
-        self.ui.TableView.setColumnWidth(5, 70)
-        self.ui.TableView.setColumnWidth(6, 200)
-        # for i, width in enumerate(ini.tablegraphs[2]):
-        #     print (i, width)
-        #     self.ui.TableView.setColumnWidth(i, width)
+    def setuptable(self):
+        self.__set_table_props()
 
+    def __set_table_props(self):
+        dirmodel = QtGui.QStandardItemModel()
+        dirmodel.setHorizontalHeaderLabels(list(ini.tablegraphs[1]))
+        self.ui.TableView.setModel(dirmodel)
+        self.ui.TableView.verticalHeader().hide()
+        self.ui.TableView.horizontalHeader().setStretchLastSection(True)
+        self.ui.TableView.horizontalHeader().setSectionsClickable(False)
+        for i, width in enumerate(ini.tablegraphs[2]):
+            self.ui.TableView.setColumnWidth(i, width)
 
     def __load_icons(self, application):
         ico = QtGui.QIcon(ini.icon_path_main)
@@ -82,6 +82,7 @@ class UiView(QtWidgets.QMainWindow):
 
     def showdir(self, dirmodel):
         self.ui.TableView.setModel(dirmodel)
+        # self.ui.TableView.resizeRowsToContents()
 
     def select_dir(self):
         self.filedialog.exec()
@@ -96,46 +97,15 @@ class UiView(QtWidgets.QMainWindow):
         row_ = self.__getrow()
         self.signal_choose_song.emit(row_)
 
-    def __readvalues(self):
-        #row_ = self.__getrow()
-        dict_ = {}
-        dict_['tracknum'] = self.ui.Edit_track.text()
-        dict_['artist'] = self.ui.Edit_artist.text()
-        dict_['title'] = self.ui.Edit_title.text()
-        dict_['album'] = self.ui.Edit_album.text()
-        dict_['author'] = self.ui.Edit_author.text()
-        dict_['year'] = self.ui.Edit_year.text()
-        dict_['genre'] = self.ui.Edit_genre.text()
-        dict_['comment'] = self.ui.TextEdit_comment.toPlainText()
-        for word_ in dict_:
-            if dict_[word_].startswith(r"/re/:"):
-                dict_[word_] = (dict_[word_][5:], True)
-            else:
-                dict_[word_] = (dict_[word_], False)
-        return dict_
-
     def apply_to_one(self):
-        try:
-            dict_ = self.__readvalues()
-            row_ = self.__getrow()
-            # print(dict_)
-            # print(row_)
-            self.songlist.changetags(row_, dict_)
-            self.songlist.save(row_)
-            self.showdir(self.workdir)
-            self.ui.TableView.selectRow(row_)
-        except:
-            pass
+        row_ = self.__getrow()
+        self.signal_apply_to_one.emit(row_)
+        self.ui.TableView.selectRow(row_)
 
     def apply_to_all(self):
-        try:
-            dict_ = self.__readvalues()
-            # print(dict_)
-            self.songlist.changetagsforall(dict_)
-            self.songlist.saveall()
-            self.showdir(self.workdir)
-        except:
-            pass
+        row_ = self.__getrow()
+        self.signal_apply_to_all.emit()
+        self.ui.TableView.selectRow(row_)
 
     def get_track_num(self):
         return self.ui.Edit_track.text()
