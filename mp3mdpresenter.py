@@ -2,6 +2,7 @@ from gui_loader import UiView
 from mp3idmaker import SongList
 from PyQt5 import QtGui
 import ini
+import os
 
 class Presenter:
     def __init__(self, app):
@@ -9,7 +10,7 @@ class Presenter:
         self.view.show()
         self.connect_signals()
         # self.view.presenter = self
-        self.workdir = ini.folder[8] # os.getcwd()
+        self.workdir = os.getcwd() # ini.folder[8] # os.getcwd()
         self.refresh_view()
 
     def connect_signals(self):

@@ -1,6 +1,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 import sys
 import ini
+import pathlib
 import os
 from getfiles import getfileslist
 from mp3idmaker import SongList
@@ -174,6 +175,6 @@ if __name__ == '__main__':
     mainwin = UiView(app)   # uic.loadUi("pirate.ui")
    # loadicons(mainwin, app)
     mainwin.setupUi_buttons()
-    mainwin.setupUi_shortcuts()
+    mainwin.setupUi_shortcuts(app)
     mainwin.show()
     sys.exit(app.exec_())
