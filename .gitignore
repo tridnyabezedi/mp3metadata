@@ -15,7 +15,9 @@ test_votjsmall
 *.bat
 
 # QT files
-
+*.cpp
+*.h
+*.pro
 
 # Created by .ignore support plugin (hsz.mobi)
 ### Python template
