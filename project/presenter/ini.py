@@ -4,10 +4,10 @@ import pathlib
 icon_path_main = str(pathlib.PurePath('.', 'icons',
                                       '11949967862046187178kid3.svg.med.png'))
 icon_path_folder = str(pathlib.PurePath('.', 'icons', 'folder-icon.png'))
-ui_path_ui = str(pathlib.PurePath('.', 'ui', 'mp3ui', 'mainwindow.ui'))
+ui_path_ui = str(pathlib.PurePath('.', '.', 'ui', 'mp3ui', 'mainwindow.ui'))
 # ui_path_ui = '.' + os.sep + 'ui' + os.sep + 'mp3ui'+ os.sep +'mainwindow.ui' # r'.\ui\mp3ui\mainwindow.ui'
 ui_path_py = r'.\ui\mp3ui\mainwindow.py'
-uiorpy = True # True = ui, False = pypython3
+uiorpy = False # True = ui, False = pypython3
 vocabulary = {
     'title':        ('TIT2', id3.TIT2),
     'album':        ('TALB', id3.TALB),

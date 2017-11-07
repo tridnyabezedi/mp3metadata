@@ -1,7 +1,7 @@
-from gui_loader import UiView
-from mp3idmaker import SongList
+from ..view.gui_loader import UiView
+from ..model.mp3idmaker import SongList
 from PyQt5 import QtGui
-import ini
+from . import ini
 import os
 
 class Presenter:

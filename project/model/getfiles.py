@@ -1,4 +1,4 @@
-import ini
+from ..presenter import ini
 import glob
 from os.path import normcase, basename
 import os

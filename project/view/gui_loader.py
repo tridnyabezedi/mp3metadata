@@ -1,11 +1,11 @@
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 import sys
-import ini
+from ..presenter import ini
 import pathlib
 import os
-from getfiles import getfileslist
-from mp3idmaker import SongList
-from ui.mp3ui.mainwindow import Ui_MainWindow
+#from getfiles import getfileslist
+#from mp3idmaker import SongList
+from .ui.mp3ui.mainwindow import Ui_MainWindow
 
 
 class UiView(QtWidgets.QMainWindow):

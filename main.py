@@ -1,8 +1,8 @@
 from PyQt5 import QtGui, QtWidgets
 import sys
-from gui_loader import UiView
-import ini
-from mp3mdpresenter import Presenter
+#from gui_loader import UiView
+#import ini
+from project.presenter.mp3mdpresenter import Presenter
 
 def main():
     app = QtWidgets.QApplication(sys.argv)

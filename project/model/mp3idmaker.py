@@ -1,8 +1,8 @@
 from mutagen import id3
-from getfiles import getfileslist
+from .getfiles import getfileslist
 from os.path import basename
 import re
-import ini
+from ..presenter import ini
 
 class Song:
     vocabulary = ini.vocabulary
