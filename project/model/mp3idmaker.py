@@ -50,7 +50,6 @@ class Song:
 
 class SongList:
     def __init__(self, path_to_folder):
-        # fileslist = getfileslist(os.path.normcase(workdir_))
         fileslist = getfileslist(path_to_folder)
         self.__songlist = [Song(path) for path in fileslist]
         self.path = path_to_folder
@@ -96,63 +95,3 @@ class SongList:
     def save_all(self):
         for song in self.__songlist:
             song.save_changes()
-
-    # def gettag(self, row_, tagname):
-    #     try:
-    #         return str(self.__songlist[row_][1][self.vocabulary[tagname][0]])
-    #     except:
-    #         return ''
-
-def mainbody():
-    fileslist = getfileslist(ini.folder[0])
-    songlist = SongList(fileslist)
-    songlist.changetags(ini.tagdict)
-    songlist.save()
-
-def testbody():
-    fileslist = ini.folder[2]
-    songlist = SongList(fileslist)
-    # songlist.print()
-    #songlist.changetags(ini.tagdict)
-    # songlist.print(full=3)
-    print(songlist)
-    for i in songlist:
-        print(i['tracknum'])
-    for word in ini.vocabulary:
-        print(word)
-    print(ini.vocabulary['title'][0])
-    for i in songlist:
-        print(i['title'])
-    #songlist.save()
-    # print()
-    #print(songlist[0][0])
-    #print(songlist[0][1])
-    # print(ini.artist)
-    # print(ini.album)
-    # match = re.search(ini.tracknum, songlist[3][0])
-    # print(match.group())
-    # print(re.search(ini.tracknum, songlist[0][0]).group())
-    # print(re.search(ini.title, songlist[0][0]).group())
-    # print(re.search(ini.tagdict['tracknum'][0], songlist[0][0]).group())
-    # print(re.search(ini.tagdict['title'][0], songlist[0][0]).group())
-    #print(songlist.createtable())
-    # print(songlist[6][1])
-
-def anothertestbody():
-    fileslist = getfileslist(ini.folder[1])
-    # print(fileslist)
-
-    # songlist = SongList(fileslist)
-   # [[print(xx) for xx in x] for x in songlist.createtable()]
-    #[print(x) for x in songlist.createtable()]
-    # songlist.print(full=True)
-    #for tag in songlist[0][1]:
-        #print (tag, songlist[0][1][tag])
-    #print(songlist[1][1])
-    # songlist.print(full=2)
-    # for word in songlist.fary:
-    #     print(word, songlist.gettag(1, word))
-
-if __name__ == '__main__':
-    #anothertestbody()
-    testbody()

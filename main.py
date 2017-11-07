@@ -1,7 +1,5 @@
-from PyQt5 import QtGui, QtWidgets
+from PyQt5 import QtWidgets
 import sys
-#from gui_loader import UiView
-#import ini
 from project.presenter.mp3mdpresenter import Presenter
 
 def main():

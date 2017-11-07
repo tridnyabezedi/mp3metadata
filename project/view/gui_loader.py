@@ -1,10 +1,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 import sys
 from ..presenter import ini
-import pathlib
-import os
-#from getfiles import getfileslist
-#from mp3idmaker import SongList
 from .ui.mp3ui.mainwindow import Ui_MainWindow
 
 
@@ -14,12 +10,12 @@ class UiView(QtWidgets.QMainWindow):
     signal_apply_to_all = QtCore.pyqtSignal()
     signal_choose_song = QtCore.pyqtSignal(int)
 
-    def __init__(self, application, parent=None):
+    def __init__(self, application, parent = None):
         QtWidgets.QMainWindow.__init__(self)
         if ini.uiorpy:
             self.__load_from_ui(ini.ui_path_ui)
         else:
-            self.__load_from_py(ini.ui_path_py)
+            self.__load_from_py()
         self.__load_icons(application)
         self.setupUi_buttons()
         self.setupUi_shortcuts(application)
@@ -57,7 +53,7 @@ class UiView(QtWidgets.QMainWindow):
         self.ui = form()
         self.ui.setupUi(self)
 
-    def __load_from_py(self, ui_path_):
+    def __load_from_py(self):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
@@ -161,20 +157,3 @@ class UiView(QtWidgets.QMainWindow):
 
     def __testtest(self, str_='!!'):
         self.ui.Edit_path.setText("It's working!" + str_)
-
-
-def loadicons(window, application):
-    ico = QtGui.QIcon(ini.icon_path_main)
-    ico_folder = QtGui.QIcon(ini.icon_path_folder)
-    window.setWindowIcon(ico)
-    application.setWindowIcon(ico)
-    window.ui.PBchoosedirectory.setIcon(ico_folder)
-
-if __name__ == '__main__':
-    app = QtWidgets.QApplication(sys.argv)
-    mainwin = UiView(app)   # uic.loadUi("pirate.ui")
-   # loadicons(mainwin, app)
-    mainwin.setupUi_buttons()
-    mainwin.setupUi_shortcuts(app)
-    mainwin.show()
-    sys.exit(app.exec_())

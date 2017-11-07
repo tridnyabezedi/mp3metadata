@@ -10,7 +10,7 @@ class Presenter:
         self.view.show()
         self.connect_signals()
         # self.view.presenter = self
-        self.workdir = os.getcwd() # ini.folder[8] # os.getcwd()
+        self.workdir = os.getcwd()
         self.refresh_view()
 
     def connect_signals(self):
@@ -94,7 +94,3 @@ class Presenter:
             else:
                 dict_[word_] = (dict_[word_], False)
         return dict_
-
-
-
-
