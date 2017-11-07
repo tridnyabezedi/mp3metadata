@@ -1,13 +1,13 @@
 from mutagen import id3
 import pathlib
 
-icon_path_main = str(pathlib.PurePath('.', 'icons',
+icon_path_main = str(pathlib.PurePath('.', 'project', 'view', 'icons',
                                       '11949967862046187178kid3.svg.med.png'))
-icon_path_folder = str(pathlib.PurePath('.', 'icons', 'folder-icon.png'))
-ui_path_ui = str(pathlib.PurePath('.', '.', 'ui', 'mp3ui', 'mainwindow.ui'))
+icon_path_folder = str(pathlib.PurePath('.', 'project', 'view', 'icons', 'folder-icon.png'))
+ui_path_ui = str(pathlib.PurePath('.', 'project', 'view', 'ui', 'mp3ui', 'mainwindow.ui'))
 # ui_path_ui = '.' + os.sep + 'ui' + os.sep + 'mp3ui'+ os.sep +'mainwindow.ui' # r'.\ui\mp3ui\mainwindow.ui'
 ui_path_py = r'.\ui\mp3ui\mainwindow.py'
-uiorpy = False # True = ui, False = pypython3
+uiorpy = True # True = ui, False = pypython3
 vocabulary = {
     'title':        ('TIT2', id3.TIT2),
     'album':        ('TALB', id3.TALB),
